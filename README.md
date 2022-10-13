@@ -1,43 +1,64 @@
-# Desafio Fullstack Nexbox
-## Pontos de Interesse por GPS
+# Desafio DEV
 
-A XY Inc. é uma empresa especializada na produção de excelentes receptores GPS (Global Positioning System).
-A diretoria está empenhada em lançar um dispositivo inovador que promete auxiliar pessoas na localização de pontos de interesse (POIs), e precisa muito de sua ajuda.
-Você foi contratado para desenvolver a plataforma que fornecerá toda a inteligência ao dispositivo! Esta plataforma deve ser baseada em serviços REST, de forma a flexibilizar a integração.
+## Fluxo de processamento
 
-1. Construa um serviço para cadastrar pontos de interesse, com 3 atributos: Nome do POI, coordenada X (inteiro não negativo) e coordenada Y (inteiro não negativo). Os POIs devem ser armazenados em uma base de dados.
+O projeto foi construído utilizando o framework Django Rest Framework. Ele está dividido em 2 serviços: A ```API```, que é responsável por salvar e listar as localizaçãoes, bem como listar localizações próximas com base em uma coordenada e uma distância máxima; O ```Authenticator``` que é responsável por registrar e gerenciar os usuários logados no sistema. Os serviços se comunicam por meio de API Rest. O banco de dados utilizado para persistir as infomações foi o PostgreSQL.
 
-2. Construa um serviço para listar todos os POIs cadastrados.
+Basicamente a ```API``` receberá os dados das localizações a serem salvas e inicialmente irá checar no serviço de autenticação se o usuário que está tentando realizar a operação existe, se sim, salvará os dados, caso contrario retornará erro. A mesma coisa ocorre nas rotas de listagem de acordo com a [especificação do projeto](./README_BASE.md).
 
-3. Construa um serviço para listar POIs por proximidade. Este serviço receberá uma coordenada X e uma coordenada Y, especificando um ponto de referência, bem como uma distância máxima (d-max) em metros. O serviço deverá retornar todos os POIs da base de dados que estejam a uma distância menor ou igual a d-max a partir do ponto de referência.
+## Iniciando o projeto
 
-4. Lembre-se que é um problema simplificado, para o calculo de distância use distância entre dois pontos em R^2.
+### Dependências necessárias
+Antes de executar o projeto é preciso certificar-se de ter algumas depências instaladas. Elas são: ```Python3``` (e o pip caso não esteja instalado), o ```Docker``` e o ```Docker Compose```.
 
-#### Exemplo de Base de Dados:
+### Executando o projeto
+Depois de instaladas as dependências é possível iniciar o projeto. Para isso execute o seguinte comando:
 
-- 'Lanchonete' (x=27, y=12)
-- 'Posto' (x=31, y=18)
-- 'Joalheria' (x=15, y=12)
-- 'Floricultura' (x=19, y=21)
-- 'Pub' (x=12, y=8)
-- 'Supermercado' (x=23, y=6)
-- 'Churrascaria' (x=28, y=2)
+```shell
+make run
+```
 
-#### Exemplo de Uso:
-Dado o ponto de referência (x=20, y=10) indicado pelo receptor GPS, e uma distância máxima de 10 metros, o serviço deve retornar os seguintes POIs:
+Após isso, basta aguardar até que todos os serviços sejam iniciados e acessar a seguinte url: [http://localhost:8081](http://localhost:8081).
 
- - Lanchonete
- - Joalheria
- - Pub
- - Supermercado
- 
-### O que vamos avaliar
+### Criando tabelas no banco
+Após certificar-se de ter todas dependências instaladas e o projeto iniciado, é preciso popular o banco de dados com as tabelas que serão utilizadas. Para isso, basta executar na raíz do projeto o comando:
 
-#### Produtividade
-Tente escrever o código pensando da forma mais produtiva possível. Um dos nossos pilares técnicos é a produtividade, não se importe com performance.
-#### Qualidade
-Outro pilar importante da Nexbox, é a qualidade de seus sitemas. Para isso, trabalhamos com testes automatizados. Esperamos que sejam feitos testes automatizados para o backend.
-### Tecnologias
-Esperamos que seja usada a linguagem python utilizando algum framework web para desenvolvimento. Na Nexbox especificamente trabalhamos com o [DRF](https://www.django-rest-framework.org/), mas sinta-se a vontade para usar outro framework.
+```shell
+make migrate
+```
 
- Fonte: https://github.com/backend-br/desafios/tree/master/3%20-%20Hard/Pontos%20de%20Interesse
+OBS: Só é necessário executar esse comando na primeira vez que em for executar o projeto.
+
+
+## Executando testes unitários
+Para executar os testes unitários é necessário ter as dependências instaladas e o bando de dados construído (já explicado em etapas anteriores). Após isso, basta executar o comando:
+
+```shell
+make test
+```
+
+## Acessando documentação da API
+Para acessar a documetação da api, é preciso executar o projeto e acessar a seguinte url: [http://localhost:8081/api/docs/schema/swagger-ui/](http://localhost:8081/api/docs/schema/swagger-ui/) e para acessar a documentação do serviço de autenticação acesse a seguinte url:  [http://localhost:8081/auth/docs/schema/swagger-ui/](http://localhost:8081/auth/docs/schema/swagger-ui/)
+
+## Fluxo principal de uso
+
+Inicialmente deve-se criar um novo usuário no serviço de autencitação na rota `/auth/register`. Após isso é preciso gerar o token de autenticação na rota `/auth/api-token-auth/`.
+Depois de criado o usuário e gerado token, é possível usar as rotas de registro e listagem de localização (`/api/location/`) e a rota de listagem de localizações próximas (`/location/neighbors/`)
+
+OBS: Todas estas rotas podem ser testadas diretamente nas documentações da API.
+
+## Lista de comandos
+
+```make migrate```: Inicia o banco de dados PostgreSQL e cria as tabelas necessárias.
+
+```make run```: Inicia todos os serviços do projeto.
+
+```make test```: Executa os testes unitários.
+
+```make run-dependecies```: Inicia as dependências do projeto
+
+```make logs```: Visualiza os logs dos serviços
+
+```make down```: Encerra a execução dos serviços
+
+```make down-dependecies```: Encerra a execução das dependências

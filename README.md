@@ -59,6 +59,6 @@ OBS: Todas estas rotas podem ser testadas diretamente nas documentações da API
 
 ```make logs```: Visualiza os logs dos serviços
 
-```make down```: Encerra a execução dos serviços
+```make down```: Encerra a execução dos serviços.
 
 ```make down-dependecies```: Encerra a execução das dependências.

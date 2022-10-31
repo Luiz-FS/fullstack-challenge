@@ -61,4 +61,4 @@ OBS: Todas estas rotas podem ser testadas diretamente nas documentações da API
 
 ```make down```: Encerra a execução dos serviços
 
-```make down-dependecies```: Encerra a execução das dependências
+```make down-dependecies```: Encerra a execução das dependências.
